@@ -47,6 +47,8 @@ class DefaultDetector(OfflineDetector):
         self.device = device
         if device == 'cuda':
             self.model = self.model.cuda()
+        elif device == 'mps':
+            self.model = self.model.to('mps')
         global MODEL
         MODEL = self.model
 

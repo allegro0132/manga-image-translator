@@ -93,6 +93,7 @@ Also, if you have trouble installing pydensecrf with the command above you can i
 
 ```bash
 # use `--use-cuda` for speedup if you have a compatible NVIDIA GPU.
+# use `--use-mps` for speedup if you have a compatible Apple GPU.
 # use `--target-lang <language_code>` to specify a target language.
 # use `--inpainter=none` to disable inpainting.
 # use `--translator=none` if you only want to use inpainting (blank bubbles)
@@ -395,6 +396,7 @@ THA: Thai
 --model-dir MODEL_DIR                        Model directory (by default ./models in project root)
 --use-cuda                                   Turn on/off cuda
 --use-cuda-limited                           Turn on/off cuda (excluding offline translator)
+--use-mps                                    Turn on/off Metal programming framework
 --detector {default,ctd,craft,none}          Text detector used for creating a text mask from an
                                              image, DO NOT use craft for manga, it's not designed
                                              for it

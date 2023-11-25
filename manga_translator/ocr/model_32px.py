@@ -44,8 +44,11 @@ class Model32pxOCR(OfflineOCR):
         self.model.load_state_dict(sd['model'] if 'model' in sd else sd)
         self.model.eval()
         self.use_cuda = device == 'cuda'
+        self.use_mps = device == 'mps'
         if self.use_cuda:
             self.model = self.model.cuda()
+        elif self.use_mps:
+            self.model = self.model.to('mps')
 
     async def _unload(self):
         del self.model
@@ -90,6 +93,8 @@ class Model32pxOCR(OfflineOCR):
             image_tensor = einops.rearrange(image_tensor, 'N H W C -> N C H W')
             if self.use_cuda:
                 image_tensor = image_tensor.cuda()
+            elif self.use_mps:
+                image_tensor = image_tensor.to('mps')
             with torch.no_grad():
                 ret = self.model.infer_beam_batch(image_tensor, widths, beams_k = 5, max_seq_length = 255)
             for i, (pred_chars_index, prob, fr, fg, fb, br, bg, bb) in enumerate(ret):

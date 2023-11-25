@@ -127,6 +127,7 @@ THA: Thai
 --model-dir MODEL_DIR                        Model directory (by default ./models in project root)
 --use-cuda                                   Turn on/off cuda
 --use-cuda-limited                           Turn on/off cuda (excluding offline translator)
+--use-mps                                    Turn on/off Metal programming framework
 --detector {default,ctd,craft,none}          Text detector used for creating a text mask from an
                                              image, DO NOT use craft for manga, it's not designed
                                              for it
@@ -230,6 +231,7 @@ THA: Thai
 
 ```bash
 # 如果机器有支持 CUDA 的 NVIDIA GPU，可以添加 `--use-cuda` 参数
+# 如果机器有支持 MPS 的 Apple GPU，可以添加 `--use-mps` 参数
 # 使用 `--use-cuda-limited` 将需要使用大量显存的翻译交由CPU执行，这样可以减少显存占用
 # 使用 `--translator=<翻译器名称>` 来指定翻译器
 # 使用 `--target-lang=<语言代码>` 来指定目标语言

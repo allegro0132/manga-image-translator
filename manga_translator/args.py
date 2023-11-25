@@ -103,6 +103,8 @@ g = parser.add_mutually_exclusive_group()
 g.add_argument('--use-cuda', action='store_true', help='Turn on/off cuda')
 g.add_argument('--use-cuda-limited', action='store_true', help='Turn on/off cuda (excluding offline translator)')
 
+g.add_argument('--use-mps', action='store_true', help='Turn on/off Metal programming framework.')
+
 parser.add_argument('--detector', default='default', type=str, choices=DETECTORS, help='Text detector used for creating a text mask from an image, DO NOT use craft for manga, it\'s not designed for it')
 parser.add_argument('--ocr', default='48px', type=str, choices=OCRS, help='Optical character recognition (OCR) model to use')
 parser.add_argument('--inpainter', default='lama_large', type=str, choices=INPAINTERS, help='Inpainting model to use')

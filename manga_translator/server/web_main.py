@@ -512,6 +512,8 @@ def start_translator_client_proc(host: str, port: int, nonce: str, params: dict)
         cmds.append('--use-cuda')
     if params.get('use_cuda_limited', False):
         cmds.append('--use-cuda-limited')
+    if params.get('use_mps', False):
+        cmds.append('--use-mps')
     if params.get('ignore_errors', False):
         cmds.append('--ignore-errors')
     if params.get('verbose', False):

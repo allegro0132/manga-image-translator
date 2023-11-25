@@ -97,13 +97,22 @@ class MangaTranslator():
         self.verbose = params.get('verbose', False)
         self.ignore_errors = params.get('ignore_errors', False)
 
-        self.device = 'cuda' if params.get('use_cuda', False) else 'cpu'
+        if params.get('use_cuda', False):
+            self.device = 'cuda'
+        elif params.get('use_mps', False):
+            self.device = 'mps'
+        else:
+            self.device = 'cpu'
         self._cuda_limited_memory = params.get('use_cuda_limited', False)
         if self._cuda_limited_memory and not self.using_cuda:
             self.device = 'cuda'
         if self.using_cuda and not torch.cuda.is_available():
             raise Exception(
                 'CUDA compatible device could not be found in torch whilst --use-cuda args was set.\n' \
+                'Is the correct pytorch version installed? (See https://pytorch.org/)')
+        if self.using_mps and not torch.backends.mps.is_available():
+            raise Exception(
+                'Metal compatible device could not be found in torch whilst --use-mps args was set.\n' \
                 'Is the correct pytorch version installed? (See https://pytorch.org/)')
         if params.get('model_dir'):
             ModelWrapper._MODEL_DIR = params.get('model_dir')
@@ -113,6 +122,10 @@ class MangaTranslator():
     @property
     def using_cuda(self):
         return self.device.startswith('cuda')
+    
+    @property
+    def using_mps(self):
+        return self.device.startswith('mps')
 
     async def translate_path(self, path: str, dest: str = None, params: dict = None):
         """
@@ -427,7 +440,7 @@ class MangaTranslator():
 
         if self.verbose:
             inpaint_input_img = await dispatch_inpainting('none', ctx.img_rgb, ctx.mask, ctx.inpainting_size,
-                                                          self.using_cuda, self.verbose)
+                                                          self.device, self.verbose)
             cv2.imwrite(self._result_path('inpaint_input.png'), cv2.cvtColor(inpaint_input_img, cv2.COLOR_RGB2BGR))
             cv2.imwrite(self._result_path('mask_final.png'), ctx.mask)
 
@@ -536,7 +549,7 @@ class MangaTranslator():
                                               ctx.mask_dilation_offset, ctx.ignore_bubble, self.verbose)
 
     async def _run_inpainting(self, ctx: Context):
-        return await dispatch_inpainting(ctx.inpainter, ctx.img_rgb, ctx.mask, ctx.inpainting_size, self.using_cuda,
+        return await dispatch_inpainting(ctx.inpainter, ctx.img_rgb, ctx.mask, ctx.inpainting_size, self.device,
                                          self.verbose)
 
     async def _run_text_rendering(self, ctx: Context):
